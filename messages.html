@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إلى مودة - نجوم الهوى</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- الأساسيات --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: url('https://i.postimg.cc/W46F53qm/04c8b6230c6ef421bd05449c83bb764a.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4); z-index: 0;
+        }
+
+        /* --- القائمة الجانبية --- */
+        .menu-btn {
+            position: fixed; top: 20px; right: 20px; z-index: 200;
+            cursor: pointer; width: 30px; height: 25px;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .menu-btn span { display: block; height: 3px; width: 100%; background: #ffb6c1; border-radius: 10px; transition: 0.4s; }
+        .menu-btn.open span:nth-child(1) { transform: translateY(11px) rotate(45deg); }
+        .menu-btn.open span:nth-child(2) { opacity: 0; }
+        .menu-btn.open span:nth-child(3) { transform: translateY(-11px) rotate(-45deg); }
+
+        .side-menu {
+            position: fixed; top: 65px; right: -200px; width: 160px;
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px);
+            z-index: 150; transition: 0.5s; display: flex; flex-direction: column; padding: 15px;
+            border-radius: 20px 0 20px 20px; border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .side-menu.active { right: 10px; }
+        .side-menu a { text-decoration: none; color: white; margin: 12px 0; text-align: center; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
+
+        /* --- الحاوية الرئيسية --- */
+        #mainContainer { position: relative; z-index: 1; text-align: center; transition: 0.6s ease; }
+
+        .instruction {
+            color: white; font-size: 1.2rem; margin-bottom: 25px;
+            text-shadow: 0 0 15px rgba(255, 105, 180, 0.4);
+        }
+
+        /* الزر المتوهج مع النجوم البطيئة */
+        .star-btn, .message-popup {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* الطبقة المشتركة للنجوم */
+        .star-btn::after, .message-popup::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 300%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png');
+            opacity: 0.35;
+            animation: moveStars 25s linear infinite; /* سرعة بطيئة جداً */
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes moveStars { from { transform: translateX(0); } to { transform: translateX(33%); } }
+
+        .star-btn {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1.5px solid rgba(255, 182, 193, 0.6);
+            color: white; padding: 18px 50px; font-size: 1.3rem;
+            border-radius: 15px; cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.4);
+            backdrop-filter: blur(8px); transition: 0.4s;
+            z-index: 1;
+        }
+
+        /* --- صندوق الرسالة Pop-up --- */
+        .message-popup {
+            position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 90%; max-width: 420px; max-height: 85vh;
+            padding: 40px 25px; background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 55px; color: white; text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3), 0 0 30px rgba(255, 182, 193, 0.3);
+            opacity: 0; z-index: 300; overflow-y: auto; scrollbar-width: none;
+        }
+
+        /* أنميشن الدخول والخروج المميز */
+        .message-popup.show { animation: springIn 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards; pointer-events: auto; }
+        .message-popup.hide { animation: dissolveOut 0.6s ease forwards; pointer-events: none; }
+
+        @keyframes springIn {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        @keyframes dissolveOut {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1.1); opacity: 0; filter: blur(15px); }
+        }
+
+        /* تنسيق محتوى الرسالة */
+        .msg-image {
+            width: 100%; border-radius: 30px; margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(255, 105, 180, 0.2);
+            border: 1px solid rgba(255,255,255,0.2); display: none;
+            position: relative; z-index: 2;
+        }
+
+        .poetry-text {
+            font-size: 1.3rem; line-height: 1.8; font-weight: 400;
+            color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            position: relative; z-index: 2;
+        }
+
+        /* أنميشن السطر */
+        .line { opacity: 0; transform: translateY(15px); display: block; margin-bottom: 10px; animation: lineFadeIn 0.9s ease forwards; }
+        @keyframes lineFadeIn { to { opacity: 1; transform: translateY(0); } }
+
+        .hidden-content { opacity: 0 !important; transform: scale(0.95); pointer-events: none; }
+
+    </style>
+</head>
+<body>
+
+    <div class="menu-btn" onclick="toggleMenu()" id="menuBtn"><span></span><span></span><span></span></div>
+    <div class="side-menu" id="sideMenu">
+        <a href="home.html">الرئيسية</a>
+        <a href="words.html">الحب</a>
+        <a href="messages.html">رسائلنا</a>
+    </div>
+
+    <div id="mainContainer">
+        <div class="instruction">اِضْغَطِي هُنَا لِظُهُورِ رِسَالَةٍ</div>
+        <button class="star-btn" onclick="revealMystery()">اِكْتَشِفِي الْمَجْهُولَ</button>
+    </div>
+
+    <div class="message-popup" id="msgPopup" onclick="hideMystery()">
+        <div id="contentOrder">
+            </div>
+        <div style="font-size: 0.8rem; margin-top: 30px; color: #ffb6c1; opacity: 0.8; font-weight: 700;">(انقري للعودة)</div>
+    </div>
+
+    <script>
+        const messages = [
+            {
+                text: "أُحِبُّكِ حُبًّا هادِئًا في مَهْجَتي\nكَنَبْضِ قَلْبٍ لا يُريدُ سِوَاكِ\nأَمشي على طيفِ الهَوى مُتَبَسِّمًا\nلِأَنَّ في عَيْنَيْكِ كُلَّ مَسَاكِي\nيا زَهْرَةً نَمَتِ الرِّياحُ بِظِلِّها\nوَسَقَتْ فُؤادي مِنْ شَذَى ذِكْرَاكِ\nإن غِبْتِ يومًا لا يَغيبُ خَيالُكِ\nوَيَظلُّ قَلْبي في الوَفاءِ هُنَاكِ\nما كُنْتُ أَدْري أَنَّ لِلْحُبِّ صَوْتًا\nحَتّى سَمِعْتُ النَّبْضَ مِنْ شِفْتَاكِ\nفَخُذي يَدي وامشي بِرِفْقٍ في الهَوى\nفَالدَّرْبُ يَحْلو حينَ يَحْلوكِ",
+                image: "https://i.postimg.cc/DzP0rw8P/2a8bcca6ae2ebfbcad37387a9b3fb79a.jpg",
+                imageFirst: true
+            },
+            {
+                text: "أُحِبُّكِ حُبَّ طِفْلٍ لا يُجيدُ\nسِوَى أَنْ يَبْتَسِمَ لِمَنْ أَحَبَّ\nأَمُدُّ لَكِ القَلْبَ قَبْلَ يَدَيَّ\nفَإِنْ تَعِبْتِ يَكُونُ لَكِ مَلجَأ\nأُنادِيكِ في صَمْتِي فَتَسْمَعِينِي\nوَيَهْدَأُ كُلُّ شَوْقٍ إِذَا اقْتَرَبْتِ\nأَخَافُ عَلَيْكِ مِنْ دُنْيَا الأَذَى\nكَمَا يَخَافُ القَلْبُ عَلَى النَّبْضِ",
+                image: "https://i.postimg.cc/Y2W9RRGh/ec94569f609eb6bfd0e9e0e99298d65a.jpg",
+                imageFirst: false
+            },
+            {
+                text: "عُيونِكِ لَمّا تِجِي يِضْيَعْ مَكَانِي\nوَأَنْسَى الطَّرِيقَ وَأَمْشِي فِي نُورِهَا\nحُلْوَتِكِ فِي نَظْرَةٍ مَا تِنْقَال\nكُلُّ الجَمَالِ انْجَمَعْ فِي عُيُونِهَا\nإِذَا شِفْتُهَا يِسْكُتُ الدَّمْعُ وَقَلْبِي\nوَيَصِيرُ الهَوى صَوْتِي وَعُنْوَانِي\nعُيونِهَا بَحْرْ وَأَنَا زَوْرَقْ هَوَى\nأَغْرَقْ فِيهَا وَأَرْضَى بِغُرْقَانِي",
+                image: "",
+                imageFirst: false
+            },
+            {
+                text: "روحُكِ نَسِيمٌ يَمْلأُ قَلْبِي هُدوءًا\nوابتسامتكِ شُعاعٌ يُنيرُ دروبي\nتعاملُكِ رَقِيٌّ كَنسيمِ الوردِ الرَّطبِ\nيَسْكُنُ قلبي ويَهدي حُبِّي وحُرُوبي\nوجودُكِ بَينَ يَدي كَأَنَّ الزَّمَنَ يَتَوقَّف\nوكلُّ دَقائقِ الحياةِ تَبْدُو أَجْمَلَ مَعَكِ\nحُنيّتكِ تُغنّي قلبي لحنًا هادئًا\nويزداد الهَوى شَوْقًا مع كلِّ نَظْرَةٍ منكِ",
+                image: "",
+                imageFirst: false
+            },
+            {
+                text: "وَعَدْتِينِي تَغَيَّرِي يا نُورَ عَيْنِي\nوَأَنَا أُقَدِّمُ لَكْ كُلَّ قَلْبِي وَحُرُوفِي\nأَهْدِيكِ عُمْرِي وَكُلَّ لَحْظَةٍ حَنُونِي\nلَوْ تَغَيَّرْتِ، يَصِيرُ الهَوَى لَكِ رَفِيقِي\nكُلُّ حُلُمِي يَكُونُ لَكِ، وَكُلُّ أَيَّامِي\nأُضَوِّي لَكِ الدُّرُوبَ وَأَمْسَحُ هُمُومَكِ فِي لَيْلِكِ\nيا رُوحَ قَلْبِي، وَعْدُكِ صَارَ أَمَان\nوَأَنَا لَكِ كُلُّ شَيْءٍ، وَكُلُّ شَيْءٍ مَعَكِ يُزِينُ حَيَاتَكِ",
+                image: "https://i.postimg.cc/rpsxgHr2/e27e6a2026fea30200b1a1f159b34736-(1).jpg",
+                imageFirst: false
+            }
+        ];
+
+        function toggleMenu() {
+            document.getElementById('menuBtn').classList.toggle('open');
+            document.getElementById('sideMenu').classList.toggle('active');
+        }
+
+        function revealMystery() {
+            const container = document.getElementById('mainContainer');
+            const popup = document.getElementById('msgPopup');
+            const contentOrder = document.getElementById('contentOrder');
+
+            const msgObj = messages[Math.floor(Math.random() * messages.length)];
+            contentOrder.innerHTML = ''; 
+
+            let imgElem = null;
+            if(msgObj.image) {
+                imgElem = document.createElement('img');
+                imgElem.src = msgObj.image;
+                imgElem.className = 'msg-image';
+                imgElem.style.display = 'block';
+            }
+
+            const textElem = document.createElement('div');
+            textElem.className = 'poetry-text';
+            const lines = msgObj.text.split('\n');
+            lines.forEach((line, index) => {
+                const span = document.createElement('span');
+                span.className = 'line';
+                span.innerText = line;
+                span.style.animationDelay = `${(index * 0.7) + 0.4}s`;
+                textElem.appendChild(span);
+            });
+
+            if(msgObj.imageFirst && imgElem) {
+                contentOrder.appendChild(imgElem);
+                contentOrder.appendChild(textElem);
+            } else {
+                contentOrder.appendChild(textElem);
+                if(imgElem) contentOrder.appendChild(imgElem);
+            }
+
+            container.classList.add('hidden-content');
+            popup.classList.remove('hide');
+            setTimeout(() => popup.classList.add('show'), 300);
+        }
+
+        function hideMystery() {
+            const container = document.getElementById('mainContainer');
+            const popup = document.getElementById('msgPopup');
+            popup.classList.replace('show', 'hide');
+            setTimeout(() => container.classList.remove('hidden-content'), 600);
+        }
+    </script>
+</body>
+</html>

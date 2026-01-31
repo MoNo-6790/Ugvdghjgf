@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تذكار Mawada</title>
+    <style>
+        /* إعدادات الشاشة والخلفية */
+        body {
+            margin: 0; padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url('https://i.postimg.cc/159n4jys/kelly-sikkema-Ei-Wb-Fych-LIg-unsplash.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        /* طبقة تعتيم فوق الصورة */
+        body::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5); z-index: 1;
+        }
+
+        /* صندوق تسجيل الدخول مع التوهج الوردي */
+        .login-box {
+            position: relative; z-index: 2;
+            width: 320px; padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 105, 180, 0.4);
+            text-align: center;
+            color: white;
+            box-shadow: 0 0 25px rgba(255, 105, 180, 0.5); /* توهج وردي */
+            animation: boxEntrance 1s ease forwards;
+        }
+
+        h2, .input-group, button {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        /* أنميشن الدخول المتسلسل */
+        h2 { animation: entrance 0.6s forwards 0.8s; }
+        .u-group { animation: entrance 0.6s forwards 1.1s; }
+        .p-group { animation: entrance 0.6s forwards 1.4s; }
+        button { animation: entrance 0.6s forwards 1.7s; }
+
+        @keyframes boxEntrance {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes entrance {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* حقول الإدخال */
+        input {
+            width: 100%; padding: 12px; margin: 10px 0;
+            background: rgba(255, 255, 255, 0.15);
+            border: none; border-radius: 10px; color: white;
+            outline: none; text-align: center; box-sizing: border-box;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 10px rgba(255, 105, 180, 0.3);
+        }
+
+        /* زر الدخول */
+        button {
+            width: 100%; padding: 12px; margin-top: 15px;
+            border: none; border-radius: 10px;
+            background: white; color: #333; font-weight: bold;
+            cursor: pointer; transition: 0.3s;
+        }
+
+        button:hover {
+            background: #ff69b4; color: white;
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4);
+        }
+
+        /* --- أنميشن الاختفاء (عكس الدخول) --- */
+        .exit-anim {
+            animation: exit 0.6s forwards ease-in !important;
+        }
+
+        @keyframes exit {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(20px); }
+        }
+
+        .box-exit {
+            animation: boxExit 0.8s forwards 0.8s ease-in;
+        }
+
+        @keyframes boxExit {
+            to { opacity: 0; transform: scale(0.9); filter: blur(10px); }
+        }
+
+        #error-msg { color: #ff69b4; font-size: 14px; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="login-box" id="box">
+        <h2 id="t1">مرحباً Mawada</h2>
+        
+        <div class="input-group u-group" id="i1">
+            <input type="text" id="user" placeholder="اسم المستخدم">
+        </div>
+        
+        <div class="input-group p-group" id="i2">
+            <input type="password" id="pass" placeholder="كلمة المرور">
+        </div>
+        
+        <button onclick="check()" id="btn">دخول</button>
+        <p id="error-msg">البيانات غير صحيحة ❤️</p>
+    </div>
+
+    <script>
+        function check() {
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
+
+            if (u === "Mawada" && p === "20102006") {
+                startExit();
+            } else {
+                document.getElementById('error-msg').style.display = "block";
+                // رجة خفيفة عند الخطأ
+                document.getElementById('box').animate([
+                    { transform: 'translateX(-5px)' }, { transform: 'translateX(5px)' }
+                ], { duration: 100, iterations: 3 });
+            }
+        }
+
+        function startExit() {
+            // تنفيذ أنميشن الاختفاء العكسي
+            document.getElementById('btn').classList.add('exit-anim');
+
+            setTimeout(() => {
+                document.getElementById('i2').classList.add('exit-anim');
+            }, 200);
+
+            setTimeout(() => {
+                document.getElementById('i1').classList.add('exit-anim');
+                document.getElementById('t1').classList.add('exit-anim');
+            }, 400);
+
+            setTimeout(() => {
+                document.getElementById('box').classList.add('box-exit');
+            }, 800);
+
+            // الانتقال لصفحة home.html بعد انتهاء الأنميشن
+            setTimeout(() => {
+                window.location.href = "home.html";
+            }, 1800);
+        }
+    </script>
+</body>
+</html>

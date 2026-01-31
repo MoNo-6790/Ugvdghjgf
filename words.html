@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إلى مودة - ذكرياتنا</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- الإعدادات العامة --- */
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: url('https://i.postimg.cc/P54Tsnfd/2f104e7f72935134c49fc8c7dc0b54a1.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        /* --- تصميم القائمة الجانبية (مطابق تماماً لـ home.html) --- */
+        .menu-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 200;
+            cursor: pointer;
+            width: 30px;
+            height: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .menu-btn span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background: #ff69b4;
+            border-radius: 10px;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* حركات الزر عند الفتح */
+        .menu-btn.open span:nth-child(1) { transform: translateY(11px) rotate(45deg); }
+        .menu-btn.open span:nth-child(2) { opacity: 0; }
+        .menu-btn.open span:nth-child(3) { transform: translateY(-11px) rotate(-45deg); }
+
+        /* تصميم القائمة الجانبية الشفافة الموحدة */
+        .side-menu {
+            position: fixed;
+            top: 65px;
+            right: -200px;
+            width: 160px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 150;
+            transition: 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            align-items: center;
+            border-radius: 20px 0 20px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .side-menu.active { 
+            right: 10px; 
+        }
+
+        .side-menu a {
+            text-decoration: none;
+            color: white; /* توحيد اللون مع الرئيسية */
+            margin: 12px 0;
+            font-size: 1.1rem;
+            transition: 0.3s;
+            width: 100%;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 5px;
+            font-family: 'Amiri', serif; /* توحيد الخط */
+            font-weight: 700;
+        }
+
+        .side-menu a:last-child { border: none; }
+        .side-menu a:hover { color: #ff69b4; }
+
+        /* --- المربعات والنجوم (بدون تغيير) --- */
+        .container { 
+            width: 100%; 
+            max-width: 550px; 
+            margin-top: 80px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 50px; 
+        }
+
+        .pro-card {
+            opacity: 0; 
+            visibility: hidden;
+            transform: translateY(25px); 
+            transition: opacity 1.2s ease, transform 1.2s ease;
+        }
+
+        .pro-card.active { 
+            opacity: 1; 
+            visibility: visible; 
+            transform: translateY(0); 
+        }
+
+        .card-content {
+            background: rgba(255, 255, 255, 0.05); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px); 
+            padding: 25px; 
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.2); 
+            position: relative; 
+            overflow: hidden;
+        }
+
+        /* النجوم داخل المربعات */
+        .stars-container { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            pointer-events: none; 
+        }
+
+        .star {
+            position: absolute; 
+            background: white; 
+            border-radius: 50%; 
+            opacity: 0;
+            animation: twinkle 4s infinite ease-in-out;
+        }
+
+        @keyframes twinkle { 
+            0%, 100% { opacity: 0.1; } 
+            50% { opacity: 0.7; } 
+        }
+
+        /* النصوص */
+        .card-content h2 {
+            font-family: 'Amiri', serif; 
+            color: #ff69b4; 
+            font-size: 1.7rem;
+            margin-bottom: 15px; 
+            text-align: center;
+        }
+
+        .line {
+            display: block; 
+            color: white; 
+            font-size: 1.1rem; 
+            line-height: 2;
+            margin-bottom: 6px; 
+            opacity: 0; 
+            transform: translateY(10px);
+            transition: 0.8s ease-out; 
+            text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+        }
+
+        .pro-card.active .line { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+
+        .right { align-self: flex-start; }
+        .left { align-self: flex-end; }
+
+        /* --- القمر المتوهج (بدون تغيير) --- */
+        .moon-element {
+            position: fixed;
+            right: 25px;
+            top: 55%;
+            transform: translateY(-50%);
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.02) 70%);
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 40px rgba(255, 105, 180, 0.6), inset 0 0 15px rgba(255, 105, 180, 0.3);
+            opacity: 0;
+            transition: opacity 2s ease-in-out, transform 0.8s ease;
+            animation: moonPulse 5s infinite alternate ease-in-out, moonFloat 10s infinite ease-in-out;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .moon-element::after {
+             content: '';
+             position: absolute;
+             top: 10px;
+             left: 10px;
+             width: 80px;
+             height: 80px;
+             background: transparent;
+             border-radius: 50%;
+             box-shadow: inset 10px 0 0 rgba(255, 255, 255, 0.05);
+             z-index: 1;
+        }
+
+        .moon-element.show {
+            opacity: 1;
+            transform: translateY(-50%) scale(1);
+        }
+
+        @keyframes moonPulse {
+            0% { box-shadow: 0 0 40px rgba(255, 105, 180, 0.6), inset 0 0 15px rgba(255, 105, 180, 0.3); }
+            100% { box-shadow: 0 0 60px rgba(255, 105, 180, 0.8), inset 0 0 25px rgba(255, 105, 180, 0.5); }
+        }
+
+        @keyframes moonFloat {
+            0%, 100% { transform: translateY(-50%) translateX(0); }
+            50% { transform: translateY(-55%) translateX(10px); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="menu-btn" id="menuBtn" onclick="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <div class="side-menu" id="sideMenu">
+        <a href="home.html">الرئيسية</a>
+        <a href="words.html">الحب</a>
+        <a href="messages.html">رسائل عشوائية</a>
+        <a href="#" onclick="location.reload()">إعادة العرض</a>
+    </div>
+
+    <div class="container">
+        <div class="pro-card right" id="box1">
+            <div class="card-content">
+                <div class="stars-container"></div>
+                <h2>﴿ مَوَدَّةُ ﴾</h2>
+                <div class="text-lines">
+                    <span class="line" style="transition-delay: 0.8s;">مَوَدَّةُ، هاي مَشاعِري إلِج مو مُجَرَّد حُبّ شَخْص فَقَط، لا…</span>
+                    <span class="line" style="transition-delay: 1.8s;">حُبّي إلِج أَكثَر مِن ما تَتَصَوَّرين إِنْتِ. يَعني مِن أگولِج أُحِبِّج،</span>
+                    <span class="line" style="transition-delay: 2.8s;">مو مُجَرَّد كَلِمَة تِنْگال عَلى اللِّسان ونِفْرَح بيها، لا وَالله،</span>
+                    <span class="line" style="transition-delay: 3.8s;">اللّي أَقْصِدَه بِهاي الكَلِمَة هو: شْگَد أُحِبّ رُوحِج،</span>
+                    <span class="line" style="transition-delay: 4.8s;">شْگَد أُحِبّ شَخْصِيَّتِج ، وشْگَد أُحِبّ سَوالِفِج.</span>
+                    <span class="line" style="transition-delay: 5.8s;">يَعني مِن صِدِگ مَرّات أَحِسّ يَومي فارِغ كِلّش إذا ما أَسأَل عَلِيج،</span>
+                    <span class="line" style="transition-delay: 6.8s;">إذا ما أُراسِلِج ولو بِكَلِمَة واحِدَة.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="pro-card left" id="box2">
+            <div class="card-content">
+                <div class="stars-container"></div>
+                <h2>كَلأم بسًيَط آلجَ</h2>
+                <div class="text-lines">
+                    <span class="line" style="transition-delay: 0.8s;">أَحبَبْتُكَ رغمَ أَنّي لا أَحتَضِنُكَ،</span>
+                    <span class="line" style="transition-delay: 1.8s;">ولا أَراكَ دائِمًا. أَحبَبْتُكَ لأَنّي كَتَبْتُ بِكَ،</span>
+                    <span class="line" style="transition-delay: 2.8s;">وقَرَأْتُ لَكَ، وضَحِكْتُ مِن أَجْلِكَ،</span>
+                    <span class="line" style="transition-delay: 3.8s;">وتَغَيَّرْتُ لِأَجْلِكَ، وأَحبَبْتُكَ؛ وأَنْتَ بَعيد؟</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="moon-element" id="moonElement"></div>
+
+    <script>
+        // دالة التحكم في القائمة
+        function toggleMenu() {
+            document.getElementById('menuBtn').classList.toggle('open');
+            document.getElementById('sideMenu').classList.toggle('active');
+        }
+
+        // إنشاء النجوم
+        function createStars() {
+            document.querySelectorAll('.stars-container').forEach(container => {
+                for (let i = 0; i < 15; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    const size = Math.random() * 2 + 1 + 'px';
+                    star.style.width = size; star.style.height = size;
+                    star.style.top = Math.random() * 100 + '%';
+                    star.style.left = Math.random() * 100 + '%';
+                    star.style.animationDelay = Math.random() * 5 + 's';
+                    container.appendChild(star);
+                }
+            });
+        }
+
+        // إظهار المربعات بالتوقيتات المطلوبة
+        function revealCard(id, delay) {
+            setTimeout(() => {
+                const card = document.getElementById(id);
+                if(card) {
+                    card.classList.add('active');
+                }
+            }, delay);
+        }
+
+        window.onload = () => {
+            createStars();
+            revealCard('box1', 500);
+            revealCard('box2', 8000); // 8 ثواني كما طلبت
+
+            // إظهار القمر
+            setTimeout(() => {
+                document.getElementById('moonElement').classList.add('show');
+            }, 9000);
+        };
+    </script>
+</body>
+</html>
